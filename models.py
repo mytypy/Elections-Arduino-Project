@@ -52,3 +52,7 @@ class ElectionsChoose(Model):
     election_id: Mapped[int]
     
     to_user_choose_id = relationship('UserElection', back_populates='choose_id')
+
+
+# urls = Urls('simple')
+# Model.metadata.create_all(urls.engine)

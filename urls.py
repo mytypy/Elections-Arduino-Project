@@ -11,7 +11,7 @@ class ConnectorNotFound(Exception):
 
 class Urls:
     __USERNAME = 'root'
-    __PASSWORD = 'ZXCPUDGE228'
+    __PASSWORD = 'ZXCPUDGE228NEKITvip123' #ZXCPUDGE228 на Kubuntu
     __HOST = '127.0.0.1'
     __DB_NAME = 'elections'
     __PORT = 3306
