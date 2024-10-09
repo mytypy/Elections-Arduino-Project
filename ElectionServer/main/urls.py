@@ -1,14 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
-from .views import Election, UserModelView
+from .views import UserModelView, ElectionModelView
 
 
 router = SimpleRouter()
 router.register(r'user', UserModelView, basename='user')
-print(router.urls)
+router.register(r'election', ElectionModelView, basename='election')
 
 urlpatterns = [
-    path('api/v8/elction/<int:pk>/',  Election.as_view()),
     path('api/v8/', include(router.urls))
 ]
