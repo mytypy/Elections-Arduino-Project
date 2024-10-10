@@ -1,36 +1,15 @@
 from django.db import models
 
 
-class ElectionModel(models.Model):
-    name = models.CharField(verbose_name='Имя', max_length=256)
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name='Время создания', null=True)    
-    
-    def __str__(self) -> str:
-        return self.name
-    
-class ChoiceModel(models.Model):
-    name = models.CharField(max_length=254, verbose_name='Имя выбора', unique=True)
-    election = models.ForeignKey(
-        ElectionModel,
-        on_delete=models.CASCADE,
-        related_name='choices',
-        verbose_name='Голосования',
-        null=True
-    )
-    
-    def __str__(self) -> str:
-        return self.name
-
-
 class UserModel(models.Model):
     id_card = models.CharField(max_length=254, verbose_name='ID карточки', unique=True)
-    election = models.ForeignKey(ElectionModel,
+    election = models.ForeignKey('election.ElectionModel',
                                  on_delete=models.CASCADE,
                                  related_name='user',
                                  verbose_name='Голосования',
                                  null=True)
     choice = models.ForeignKey(
-        ChoiceModel,
+        'choice.ChoiceModel',
         on_delete=models.CASCADE,
         related_name='user',
         verbose_name='Выборы ответов',
