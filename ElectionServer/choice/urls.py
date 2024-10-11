@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
-from .views import UserModelView
+from .views import ChoiceViewSet
 
 
 router = SimpleRouter()
-router.register(r'user', UserModelView, basename='user')
+router.register(r'choice', ChoiceViewSet, basename='choice')
 
 
 urlpatterns = [

@@ -38,3 +38,25 @@ class UserModelView(ModelViewSet):
             return Response({'response': er.args[0]})
         
         return Response({'response': 'Запись добавлена'})
+
+    @action(
+        methods=['GET'],
+        detail=False
+    )
+    def get_user(self, request: HttpRequest) -> Response:
+        data: dict = request.GET
+        
+        user_card_id: str | None = data.get('card_id')
+        
+        try:
+            user: UserModel = UserModel.objects.select_related('election').select_related('choice').get(pk=user_card_id)
+        except Exception:
+            return Response({'response': 'Такого пользователя не существует или вы не передали параметр'})
+        
+        data_user = {
+            'card_id': user.id_card,
+            'election': user.election.name,
+            'choice': user.choice.name
+        }
+        
+        return Response({'response': {'user_info': data_user}})

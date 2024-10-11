@@ -6,4 +6,4 @@ class ChoicesSerializer(ModelSerializer):
     
     class Meta:
         model = ChoiceModel
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'election')

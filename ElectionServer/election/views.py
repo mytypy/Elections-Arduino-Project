@@ -1,4 +1,3 @@
-import datetime
 from typing import Any
 from django.http import HttpRequest, QueryDict
 from django.db.models import Count
@@ -71,7 +70,6 @@ headers: {
     )
     def finish_election(self, request: HttpRequest) -> Response:
         election_id: dict = request.GET
-        print(datetime.datetime.now().time())
         
         try:
             data_votes: list = list(ChoiceModel.objects.filter(election_id=election_id['id']).values('name').annotate(votes=Count('user')))
@@ -87,7 +85,6 @@ headers: {
             'statistic': [f'За ответ {name} проголосовало {value}%' for name, value in statistic.items()],
             'winner': f'Победил выбор "{winner}" с процентом голосов {statistic[winner]}%'
         }
-        print(datetime.datetime.now().time())
         return Response({'response': data})
 
     @action(
@@ -95,4 +92,18 @@ headers: {
         detail=False
     )
     def add_election(self, request: HttpRequest) -> Response:
-        ...
+        data: dict = request.POST
+
+        election_name: str = data['name']
+        
+        election = ElectionModel.objects.filter(name=election_name)
+        
+        if election.exists():
+            return Response({'response': f'"{election_name}", уже существует в базе данных'})
+
+        try:
+            ElectionModel.objects.create(name=election_name).save()
+        except Exception as er:
+            return Response({'response': f'Error {er.args[0]}'})
+        
+        return Response({'response': 'Голосование добавлено'})

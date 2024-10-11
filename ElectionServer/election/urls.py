@@ -8,5 +8,5 @@ router.register(r'election', ElectionModelView, basename='election')
 
 
 urlpatterns = [
-    path('api/election/', include(router.urls))
+    path('api/', include(router.urls))
 ]
