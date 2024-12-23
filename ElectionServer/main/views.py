@@ -1,3 +1,6 @@
+import json
+
+
 from django.http import HttpRequest
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -6,6 +9,7 @@ from .models import UserModel
 from choice.models import ChoiceModel
 from .serializers import UserSerializer
 from election.models import ElectionModel
+from .errors import ERRORS
 
         
 class UserModelView(ModelViewSet):
@@ -17,11 +21,11 @@ class UserModelView(ModelViewSet):
         detail=False
     )
     def post_user_election(self, request: HttpRequest) -> Response:
-        data: dict = request.POST
-                
+        data: dict = json.loads(request.body)
+
         id_card: str = data['id_card']
-        election: str = data['election'][0]
-        choice: str = data['choice'][0]
+        election: str = data['election']
+        choice: str = data['choice']
         
         user: UserModel = UserModel.objects.select_related('election').filter(id_card=id_card).first()
                 
@@ -35,7 +39,9 @@ class UserModelView(ModelViewSet):
             
             UserModel.objects.create(id_card=id_card, election=election, choice=choice).save()
         except Exception as er:
-            return Response({'response': er.args[0]})
+            main_error = er.args[0].split()
+            stringa = ERRORS[main_error[0]]
+            return Response({'response': stringa})
         
         return Response({'response': 'Запись добавлена'})
 

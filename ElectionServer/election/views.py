@@ -1,10 +1,12 @@
 from typing import Any
+
 from django.http import HttpRequest, QueryDict
 from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from choice.models import ChoiceModel
+from main.models import UserModel
 from .models import ElectionModel
 from .serializers import ElectionSerializer
 
@@ -73,7 +75,9 @@ headers: {
         
         try:
             data_votes: list = list(ChoiceModel.objects.filter(election_id=election_id['id']).values('name').annotate(votes=Count('user')))
-            peoples_count: int = sum(map(lambda x: x['votes'], data_votes))
+            peoples_count: int = UserModel.objects.filter(election_id=election_id['id']).count()
+            
+            print(peoples_count)
         except Exception as er:
             return Response({'response': f'Что-то пошло не так, либо неправильный id, либо вы его вообще не передали :/. Ошибка {er}'})
                 
