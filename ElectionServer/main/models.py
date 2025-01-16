@@ -15,5 +15,7 @@ class UserModel(models.Model):
         verbose_name='Выборы ответов',
         null=True
     )
-    
-# list(ChoiceModel.objects.filter(election_id=4).values('name').annotate(votes=Count('user'))) -> [{'name': 'Да', 'votes': 51}, {'name': 'Нет', 'votes': 49}]
+
+
+class Hash(models.Model):
+    password = models.CharField(max_length=255, verbose_name='Хэш', unique=True)
