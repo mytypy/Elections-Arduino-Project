@@ -29,11 +29,11 @@ class UserModelView(ModelViewSet):
         id_card: str = data['id_card']
         election: str = data['election']
         choice: str = data['choice']
+        
         user: UserModel = UserModel.objects.select_related('election').filter(id_card=id_card).first()
                 
         if user:
             if user.election.id == int(election):
-                print("Есть такой пользователь")
                 return Response({'response': f'Пользователь уже учавствует в этом голосовании "{user.election.name}"'})
                 
         try:
@@ -44,14 +44,8 @@ class UserModelView(ModelViewSet):
         except Exception as er:
             main_error = er.args[0].split()
             stringa = ERRORS[main_error[0]]
-            print(f"Error: {stringa}")
             return Response({'response': stringa})
             
-        print(f'''
-ID Пользователя: {id_card}
-Голосование: "{election.name}"
-Выбор: "{choice.name}"
-''')
         return Response({'response': 'Запись добавлена'})
 
     @action(
