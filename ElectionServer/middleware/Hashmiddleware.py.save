@@ -11,6 +11,7 @@ class HashMiddleware:
         response: HttpResponse = self.get_response(request)
         from_base = Hash.objects.get(pk=1)
         
+	print(req	)
         hash_header = request.headers.get('Hash', '')
         to_hash = sha256(hash_header.encode()).hexdigest()
 

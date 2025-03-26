@@ -22,30 +22,24 @@ class ElectionModelView(ModelViewSet):
         detail=False
     )
     def elections(self, request: HttpRequest) -> Response:
-        elections_d = []
-        
         try:
-            elections: ElectionModel = ElectionModel.objects.prefetch_related('choices').all()
+            election: ElectionModel = ElectionModel.objects.all()
         except Exception as er:
             main_error = er.args[0].split()
             stringa = ERRORS[main_error[0]]
             return Response({'response': stringa})
-        
-        for election in elections:
-            data = {
-                    'id': election.id,
-                    'election': election.name,
-                    'date': election.date_created,
-                    'choices': []
-                }
-            
-            for choice in election.choices.all():
-                data['choices'].append({'id': choice.id, 'name': choice.name})
-            
-            elections_d.append(data)
-            
-            
-        return Response({'response': elections_d})
+
+        data: dict = {
+            'election': {
+                'id': election.id,
+                'name': election.name,
+                'created': election.date_created.date()
+            },
+            'choices': [{'id': i.id, 'name': i.name} for i in choices]
+
+        }
+
+        return Response({'response': data})
 
 
     @action(
@@ -111,22 +105,19 @@ headers: {
         try:
             data_votes: list = list(ChoiceModel.objects.filter(election_id=election_id['id']).values('name').annotate(votes=Count('user')))
             peoples_count: int = UserModel.objects.filter(election_id=election_id['id']).count()
-                        
+            
+            print(peoples_count)
         except Exception as er:
             return Response({'response': f'Что-то пошло не так, либо неправильный id, либо вы его вообще не передали :/. Ошибка {er}'})
                 
-        if peoples_count == 0:
-            return Response({'response': 'У голосования еще нет участников'})
+        statistic: dict = dict(map(lambda k: (k['name'], round(k['votes']/peoples_count * 100)), data_votes))
+        winner = max(statistic, key=lambda x: statistic[x])
 
-        statistic: dict = dict(map(lambda k: (k['name'], (round(k['votes']/peoples_count * 100), k['votes'])), data_votes))
-        winner = max(statistic, key=lambda x: statistic[x][0])
-        
         data = {
-            'message': 'Итоги голосования:\n',
-            'statistic': [f'За ответ {name} проголосовало {value[0]}%\n{value[-1]} людей\n' for name, value in statistic.items()],
-            'winner': f'Победил выбор "{winner}" с процентом голосов {statistic[winner][0]}%'
+            'message': 'Итоги голосования',
+            'statistic': [f'За ответ {name} проголосовало {value}%' for name, value in statistic.items()],
+            'winner': f'Победил выбор "{winner}" с процентом голосов {statistic[winner]}%'
         }
-
         return Response({'response': data})
 
     @action(
