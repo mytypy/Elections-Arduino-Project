@@ -79,20 +79,8 @@ class ElectionModelView(ModelViewSet):
         methods=['DELETE'],
         detail=False
     )
-    def delete_election(self, request: HttpRequest) -> Response:
-        '''{
-method: 'DELETE',
-body: {
-    "id": num
-    },
-headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-}'''
-        data: str = request.body.decode('utf-8')
-        result: dict[Any, Any | list] = QueryDict(data).dict()
-
-        election: int = result['id']
+    def delete_election(self, request: HttpRequest) -> Response:  
+        election = request.GET['id']
         
         try:
             ElectionModel.objects.get(pk=election).delete()

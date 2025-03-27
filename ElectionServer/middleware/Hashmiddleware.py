@@ -14,7 +14,6 @@ class HashMiddleware:
         hash_header = request.headers.get('Hash', '')
         to_hash = sha256(hash_header.encode()).hexdigest()
 
-        
         if to_hash == from_base.password:
             return response
         
