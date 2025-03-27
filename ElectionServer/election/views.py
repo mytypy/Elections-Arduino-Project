@@ -76,11 +76,11 @@ class ElectionModelView(ModelViewSet):
         return Response({'response': data})
 
     @action(
-        methods=['DELETE'],
+        methods=['POST'],
         detail=False
     )
     def delete_election(self, request: HttpRequest) -> Response:  
-        election = request.GET['id']
+        election = request.POST['id']
         
         try:
             ElectionModel.objects.get(pk=election).delete()
