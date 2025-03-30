@@ -36,6 +36,9 @@ jobs:
       - name: Start MySQL
         run:
             sudo systemctl start mysql
+            
+      - name: Test
+        run: echo ${{ secrets.DB_PASSWORD }}
 
       - name: Ждем 10 секунд пока поднимется MySQL
         run: sleep 10  # Ждём 10 секунд перед выполнением миграций
