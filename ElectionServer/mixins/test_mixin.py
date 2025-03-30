@@ -17,9 +17,10 @@ class TestMixin:
     def init(self):
         self.id_card = 'SBX66t96ggzxc'
         self.hash = os.environ.get('HASH_ELECTION')
-        self.sha256_hash = os.environ.get('SHA_ELECTION')
+        self.sha256_hash = os.environ.get('SHA_ELECTION') # Символы ``, нужно экранировать вот так \`\`(Только на linux)
         Hash.objects.create(pk=1, password=self.sha256_hash) 
         
         self.create_elections()
         self.create_choices()
         self.create_data()
+        self.headers = {'Hash': self.hash}

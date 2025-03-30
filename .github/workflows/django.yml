@@ -1,0 +1,49 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }} 
+          MYSQL_DATABASE: elections
+          MYSQL_USER: root
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        ports:
+          - 3306:3306
+
+    steps:
+      - name: Копирование кода из репозитория
+        uses: actions/checkout@v4
+
+      - name: Установка python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12" # Параметр установки
+
+      - name: Установка зависимостей
+        run: pip install -r requirements.txt
+
+      - name: Ждем 10 секунд пока поднимется MySQL
+        run: sleep 10  # Ждём 10 секунд перед выполнением миграций
+
+      - name: Запускаем миграции
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: python manage.py migrate
+
+      - name: Запускаем тесты
+        env:
+          SHA_ELECTION: ${{ secrets.SHA_ELECTION }}
+          HASH_ELECTION: ${{ secrets.HASH_ELECTION }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: python manage.py test

@@ -25,7 +25,7 @@ class ChoiceViewSet(ModelViewSet):
             election: ElectionModel = ElectionModel.objects.get(pk=election)
             ChoiceModel.objects.create(name=name, election=election).save()
         except Exception as er:
-            return Response({'response': f'Error {er.args[0]}'})
+            return Response({'response': f'Error {er.args[0]}'}, status=400)
         
         
         return Response({'response': 'Действие добавлено в базу данных'})

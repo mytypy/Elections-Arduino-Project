@@ -1,6 +1,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from mixins.test_mixin import TestMixin
+from election.models import ElectionModel
+from choice.models import ChoiceModel
 
 
 class ElectionTests(APITestCase, TestMixin):
@@ -10,7 +12,7 @@ class ElectionTests(APITestCase, TestMixin):
         
     def test_elections(self):
         url = reverse('election-elections')
-        response = self.client.get(url, headers={'Hash': self.hash})
+        response = self.client.get(url, headers=self.headers)
         
         self.assertEqual(response.status_code, 200)
         pars = response.json()['response']
@@ -25,5 +27,11 @@ class ElectionTests(APITestCase, TestMixin):
         url = reverse('election-delete-election')
         data = {'id': 1}
         
-        response = self.client.delete(url, data=data, headers={'Hash': self.hash})
+        response = self.client.post(url, data=data, headers=self.headers)
         self.assertEqual(response.status_code, 200)
+        
+        elections = ElectionModel.objects.all().count()
+        choices = ChoiceModel.objects.filter(election_id=1).count()
+        
+        self.assertEqual((elections, choices), (0, 0))
+        
