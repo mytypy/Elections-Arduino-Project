@@ -39,11 +39,11 @@ jobs:
       - name: Запускаем миграции
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        run: python manage.py migrate
+        run: python ElectionServer/manage.py migrate
 
       - name: Запускаем тесты
         env:
           SHA_ELECTION: ${{ secrets.SHA_ELECTION }}
           HASH_ELECTION: ${{ secrets.HASH_ELECTION }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        run: python manage.py test
+        run: python ElectionServer/manage.py test
