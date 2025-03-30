@@ -33,13 +33,19 @@ jobs:
       - name: Установка зависимостей
         run: pip install -r requirements.txt
 
-      - name: Start MySQL
+      - name: Ждем, пока MySQL поднимется
         run: |
-          sudo systemctl start mysql
+          for i in {1..30}; do
+            if mysqladmin -u root -p${{ secrets.ROOT }} ping --silent; then
+              echo "MySQL is up"
+              exit 0
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+          echo "MySQL failed to start"
+          exit 1
 
-      - name: Ждем 10 секунд пока поднимется MySQL
-        run: sleep 10  # Ждём 10 секунд перед выполнением миграций
-      
       - name: Даем привилегии для пользователя root
         run: |
           # Выполняем SQL запрос для предоставления привилегий
