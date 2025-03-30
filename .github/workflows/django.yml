@@ -14,7 +14,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }} 
+          MYSQL_ROOT_PASSWORD: ${{ secrets.ROOT }}
           MYSQL_DATABASE: elections
           MYSQL_USER: root
           MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -32,6 +32,10 @@ jobs:
 
       - name: Установка зависимостей
         run: pip install -r requirements.txt
+
+      - name: Start MySQL
+        run:
+            sudo systemctl start mysql
 
       - name: Ждем 10 секунд пока поднимется MySQL
         run: sleep 10  # Ждём 10 секунд перед выполнением миграций
