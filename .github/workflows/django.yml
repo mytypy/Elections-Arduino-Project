@@ -14,10 +14,10 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: 21eqwdDQSDszxc1
+          MYSQL_ROOT_PASSWORD: ${{ secrets.ROOT }}
           MYSQL_DATABASE: elections
           MYSQL_USER: root
-          MYSQL_PASSWORD: ZXCPUDGsq112s
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
           - 3306:3306
 
@@ -39,15 +39,20 @@ jobs:
 
       - name: Ждем 10 секунд пока поднимется MySQL
         run: sleep 10  # Ждём 10 секунд перед выполнением миграций
+      
+      - name: Даем привилегии для пользователя root
+        run: |
+          # Выполняем SQL запрос для предоставления привилегий
+          mysql -u root -p${{ secrets.ROOT }} -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
       - name: Запускаем миграции
         env:
-          DB_PASSWORD: ZXCPUDGsq112s
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: python ElectionServer/manage.py migrate
 
       - name: Запускаем тесты
         env:
           SHA_ELECTION: ${{ secrets.SHA_ELECTION }}
           HASH_ELECTION: ${{ secrets.HASH_ELECTION }}
-          DB_PASSWORD: ZXCPUDGsq112s
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: python ElectionServer/manage.py test
