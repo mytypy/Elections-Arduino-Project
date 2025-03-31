@@ -39,4 +39,4 @@ jobs:
           SHA_ELECTION: ${{ secrets.SHA_ELECTION }}
           HASH_ELECTION: ${{ secrets.HASH_ELECTION }}
           DB_PASSWORD: root
-        run: python ElectionServer/manage.py test
+        run: python ElectionServer/manage.py tests
