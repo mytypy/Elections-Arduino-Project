@@ -10,20 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # services:
-    #   mysql:
-    #     image: mysql:5.7
-    #     env:
-    #       MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }} 
-    #       MYSQL_DATABASE: elections
-    #       MYSQL_USER: root
-    #       MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-    #     ports:
-    #       - 3306/tcp
-
     steps:
-      - name: Включение БД??s
-        run: sudo systemctl start mysql.service
+      - name: Включение БД??
+        run: | 
+           sudo systemctl start mysql.service
+           sleep 5
+           mysql -u root -proot -e "CREATE DATABASE elections;"
+
 
       - name: Копирование кода из репозитория
         uses: actions/checkout@v4
