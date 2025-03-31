@@ -17,7 +17,6 @@ jobs:
            sleep 5
            mysql -u root -proot -e "CREATE DATABASE elections;"
 
-
       - name: Копирование кода из репозитория
         uses: actions/checkout@v4
 
@@ -39,4 +38,4 @@ jobs:
           SHA_ELECTION: ${{ secrets.SHA_ELECTION }}
           HASH_ELECTION: ${{ secrets.HASH_ELECTION }}
           DB_PASSWORD: root
-        run: python ElectionServer/manage.py test --verbosity=3
+        run: python ElectionServer/manage.py test ElectionServer
