@@ -19,13 +19,12 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            sudo systemctl stop electionbot.service
+            sudo systemctl stop electionbot.service voteschool.service
             cd /var/www/myprojects/ElectionArduino/Elections-Arduino-Project
             git pull origin main
             source venv/bin/activate
             pip install -r requirements.txt
             cat ElectionServer/ElectionServer/settings.py
             python ElectionServer/manage.py migrate
-            sudo systemctl restart voteschool.service
-            sudo systemctl start electionbot.service
+            sudo systemctl start voteschool.service electionbot.service
             echo "✅ Деплой успешно завершён!"
