@@ -1,6 +1,9 @@
 name: "Deploy Django"
 
 
+env:
+    DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 on:
     workflow_run:
       workflows: ["Django CI"]  # Запускаем после успешного ci.yml
@@ -14,6 +17,8 @@ jobs:
 
     steps:
       - name: Подключение к серверу и деплой
+        env:
+           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.SSH_HOST }}
