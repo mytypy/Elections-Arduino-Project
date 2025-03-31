@@ -24,6 +24,7 @@ jobs:
             git pull origin main
             source venv/bin/activate
             pip install -r requirements.txt
+            echo $DB_PASSWORD
             python ElectionServer/manage.py migrate
             sudo systemctl restart voteschool.service
             sudo systemctl start electionbot.service
