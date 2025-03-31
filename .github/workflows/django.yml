@@ -19,7 +19,7 @@ jobs:
           MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
           MYSQL_ROOT_PASSWORD: ${{ secrets.ROOT }}
         ports:
-          - 3306/tcp
+          - 3306/3306
         options: >-
           --name=mysql-master
           --health-cmd="mysqladmin ping"
