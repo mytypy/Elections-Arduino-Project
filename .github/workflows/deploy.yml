@@ -18,8 +18,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            bash -i -c '
+          script: |  # Делаем обязательно т.к нужно подгрузить bash консоль, а yml такого не умеет :( (Делать, если есть переменные в ~/.bashrc)
+            bash -i -c ' 
               sudo systemctl stop electionbot.service voteschool.service || true
               cd /var/www/myprojects/ElectionArduino/Elections-Arduino-Project
               git pull origin main    
@@ -28,4 +28,4 @@ jobs:
               python ElectionServer/manage.py migrate
               sudo systemctl start voteschool.service electionbot.service
               echo "✅ Деплой успешно завершён!"
-            '
+            ' 
