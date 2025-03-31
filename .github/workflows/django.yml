@@ -13,16 +13,10 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          # The MySQL docker container requires these environment variables to be set
-          # so we can create and migrate the test database.
-          # See: https://hub.docker.com/_/mysql
           MYSQL_DATABASE: elections
           MYSQL_ROOT_PASSWORD: testrootpass
         ports:
-          # Opens port 3306 on service container and host
-          # https://docs.github.com/en/actions/using-containerized-services/about-service-containers
           - 3306:3306
-          # Before continuing, verify the mysql container is reachable from the ubuntu host
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v3
@@ -38,13 +32,11 @@ jobs:
         run: |
           pip install -r requirements.txt
       - name: Run tests
-        # These environment variables will take precedence over the ones in the Django settings file
         env:
-          # Set the DJANGO_SECRET_KEY in the Github repo settings: Go to Secrets and variables > Actions > New repository secret 
           DATABASE_NAME: elections
           DATABASE_USERNAME: root          
           DATABASE_PASSWORD: testrootpass          
           DATABASE_ENDPOINT: 127.0.0.1 # Will not work with 'localhost', since that will try a Unix socket connection (!)
         run: |
-            python manage.py migrate
-            python manage.py test
+            python ElectionServer/manage.py migrate
+            python ElectionServer/manage.py test
