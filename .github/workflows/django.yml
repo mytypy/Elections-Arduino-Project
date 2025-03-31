@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Включение БД??s
-        run: sudo mysql --user=root --password=root
+        run: sudo systemctl start mysql.service
 
       - name: Копирование кода из репозитория
         uses: actions/checkout@v4
