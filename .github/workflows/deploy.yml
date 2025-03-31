@@ -1,5 +1,8 @@
 name: "Deploy Django"
 
+env:
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  
 on:
     workflow_run:
       workflows: ["Django CI"]  # Запускаем после успешного ci.yml
@@ -21,8 +24,7 @@ jobs:
           script: |
             sudo systemctl stop electionbot.service voteschool.service
             cd /var/www/myprojects/ElectionArduino/Elections-Arduino-Project
-            mkdir sdqwdq
-            git pull origin main
+            git pull origin main    
             source venv/bin/activate
             pip install -r requirements.txt
             python ElectionServer/manage.py migrate
