@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Включение БД??s
-        uses: sudo mysql --user=root --password=root
+        run: sudo mysql --user=root --password=root
 
       - name: Копирование кода из репозитория
         uses: actions/checkout@v4
