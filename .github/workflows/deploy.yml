@@ -1,11 +1,10 @@
 name: "Deploy Django"
 
-
 on:
-    workflow_run:
-      workflows: ["Django CI"]  # Запускаем после успешного ci.yml
-      types:
-        - completed
+  workflow_run:
+    workflows: ["Django CI"]  # Запускаем после успешного CI
+    types:
+      - completed
 
 jobs:
   deploy:
@@ -14,21 +13,20 @@ jobs:
 
     steps:
       - name: Подключение к серверу и деплой
-        env:
-           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            source ~/.bashrc
-            sudo systemctl stop electionbot.service voteschool.service
-            cd /var/www/myprojects/ElectionArduino/Elections-Arduino-Project
-            git pull origin main    
-            source venv/bin/activate
-            pip install -r requirements.txt
-            DB_PASSWORD="$DB_PASSWORD" python ElectionServer/manage.py migrate
-            sudo systemctl start voteschool.service electionbot.service
-            echo "✅ Деплой успешно завершён!"
-        
+            bash -i -c '
+              export $(grep -v "^#" ~/.bashrc | xargs)  # Загружаем переменные окружения
+              sudo systemctl stop electionbot.service voteschool.service || true
+              cd /var/www/myprojects/ElectionArduino/Elections-Arduino-Project
+              git pull origin main    
+              source venv/bin/activate
+              pip install -r requirements.txt
+              python ElectionServer/manage.py migrate
+              sudo systemctl start voteschool.service electionbot.service
+              echo "✅ Деплой успешно завершён!"
+            '
