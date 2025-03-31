@@ -7,36 +7,43 @@ on:
     branches: [ "main" ]
 
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_DATABASE: elections
-          MYSQL_ROOT_PASSWORD: testrootpass
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    # services:
+    #   mysql:
+    #     image: mysql:5.7
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }} 
+    #       MYSQL_DATABASE: elections
+    #       MYSQL_USER: root
+    #       MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #     ports:
+    #       - 3306/tcp
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Ubuntu dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install libcurl4-openssl-dev libmysqlclient-dev libgirepository1.0-dev
-      - name: Setup Python
-        uses: actions/setup-python@v3
+      - name: Включение БД??
+        uses: sudo mysql --user=root --password=root
+
+      - name: Копирование кода из репозитория
+        uses: actions/checkout@v4
+
+      - name: Установка python
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.12
-      - name: Install Python dependencies
-        run: |
-          pip install -r requirements.txt
-      - name: Run tests
+          python-version: "3.12" # Параметр установки
+
+      - name: Установка зависимостей
+        run: pip install -r requirements.txt
+
+      - name: Запускаем миграции
         env:
-          DATABASE_NAME: elections
-          DATABASE_USERNAME: root          
-          DATABASE_PASSWORD: testrootpass          
-          DATABASE_ENDPOINT: 127.0.0.1 # Will not work with 'localhost', since that will try a Unix socket connection (!)
-        run: |
-            python ElectionServer/manage.py migrate
-            python ElectionServer/manage.py test
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: python ElectionServer/manage.py migrate
+
+      - name: Запускаем тесты
+        env:
+          SHA_ELECTION: ${{ secrets.SHA_ELECTION }}
+          HASH_ELECTION: ${{ secrets.HASH_ELECTION }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: python ElectionServer/manage.py test
