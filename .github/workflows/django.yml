@@ -22,7 +22,7 @@ jobs:
     #       - 3306/tcp
 
     steps:
-      - name: Включение БД??
+      - name: Включение БД??s
         uses: sudo mysql --user=root --password=root
 
       - name: Копирование кода из репозитория
