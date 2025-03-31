@@ -20,7 +20,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             bash -i -c '
-              export $(grep -v "^#" ~/.bashrc | xargs)  # Загружаем переменные окружения
               sudo systemctl stop electionbot.service voteschool.service || true
               cd /var/www/myprojects/ElectionArduino/Elections-Arduino-Project
               git pull origin main    
