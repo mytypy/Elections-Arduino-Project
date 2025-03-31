@@ -22,6 +22,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            source ~/.bashrc
             sudo systemctl stop electionbot.service voteschool.service
             cd /var/www/myprojects/ElectionArduino/Elections-Arduino-Project
             git pull origin main    
