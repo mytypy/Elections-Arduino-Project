@@ -33,10 +33,13 @@ jobs:
         env:
           DB_PASSWORD: root
         run: python ElectionServer/manage.py migrate
+      
+      - name: Debug test files
+        run: ls -R ElectionServer
 
       - name: Запускаем тесты
         env:
           SHA_ELECTION: ${{ secrets.SHA_ELECTION }}
           HASH_ELECTION: ${{ secrets.HASH_ELECTION }}
           DB_PASSWORD: root
-        run: python ElectionServer/manage.py tests
+        run: python ElectionServer/manage.py test
