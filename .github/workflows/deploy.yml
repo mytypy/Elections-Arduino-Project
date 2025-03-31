@@ -1,0 +1,30 @@
+name: "Deploy Django"
+
+on:
+    workflow_run:
+      workflows: ["Django CI"]  # Запускаем после успешного ci.yml
+      types:
+        - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Запускаем только при успешном CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Подключение к серверу и деплой
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            sudo systemctl stop electionbot.service
+            cd /var/www/myprojects/ElectionArduino/Elections-Arduino-Project
+            git pull origin main
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python ElectionServer/manage.py migrate
+            sudo systemctl restart voteschool.service
+            sudo systemctl start electionbot.service
+            echo "✅ Деплой успешно завершён!"
