@@ -1,9 +1,6 @@
 name: "Deploy Django"
 
 
-env:
-    DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
 on:
     workflow_run:
       workflows: ["Django CI"]  # Запускаем после успешного ci.yml
@@ -30,6 +27,6 @@ jobs:
             git pull origin main    
             source venv/bin/activate
             pip install -r requirements.txt
-            DB_PASSWORD="$DB_PASSWORD" python ElectionServer/manage.py migrate
+            python ElectionServer/manage.py migrate
             sudo systemctl start voteschool.service electionbot.service
             echo "✅ Деплой успешно завершён!"
