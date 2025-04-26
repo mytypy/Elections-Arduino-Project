@@ -24,7 +24,7 @@ class UserModelView(ModelViewSet):
         try:
             data: dict = json.loads(request.body)
         except Exception:
-            return Response({'response': 'Ошибка десереализации. Возможно вы не корректно передали JSON'})
+            return Response({'response': 'Ошибка десереализации. Возможно вы не корректно передали JSON'}, status=500)
 
         id_card: str = data['id_card']
         election: str = data['election']
@@ -34,7 +34,7 @@ class UserModelView(ModelViewSet):
                 
         if user:
             if user.election.id == int(election):
-                return Response({'response': f'Пользователь уже учавствует в этом голосовании "{user.election.name}"'})
+                return Response({'response': f'Пользователь уже учавствует в этом голосовании "{user.election.name}"'}, status=400)
                 
         try:
             election: ElectionModel = ElectionModel.objects.get(pk=election)
@@ -44,7 +44,7 @@ class UserModelView(ModelViewSet):
         except Exception as er:
             main_error = er.args[0].split()
             stringa = ERRORS[main_error[0]]
-            return Response({'response': stringa})
+            return Response({'response': stringa}, status=400)
             
         return Response({'response': 'Запись добавлена'})
 
@@ -60,7 +60,7 @@ class UserModelView(ModelViewSet):
         try:
             user: UserModel = UserModel.objects.select_related('election').select_related('choice').get(pk=user_card_id)
         except Exception:
-            return Response({'response': 'Такого пользователя не существует или вы не передали параметр'})
+            return Response({'response': 'Такого пользователя не существует или вы не передали параметр'}, status=400)
         
         data_user = {
             'card_id': user.id_card,

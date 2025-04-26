@@ -1,6 +1,4 @@
-from typing import Any
-
-from django.http import HttpRequest, QueryDict
+from django.http import HttpRequest
 from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -29,7 +27,7 @@ class ElectionModelView(ModelViewSet):
         except Exception as er:
             main_error = er.args[0].split()
             stringa = ERRORS[main_error[0]]
-            return Response({'response': stringa})
+            return Response({'response': stringa}, status=500)
         
         for election in elections:
             data = {
@@ -61,7 +59,7 @@ class ElectionModelView(ModelViewSet):
         except Exception as er:
             main_error = er.args[0].split()
             stringa = ERRORS[main_error[0]]
-            return Response({'response': stringa})
+            return Response({'response': stringa}, status=404)
         
         data: dict = {
             'election': {
@@ -85,7 +83,7 @@ class ElectionModelView(ModelViewSet):
         try:
             ElectionModel.objects.get(pk=election).delete()
         except Exception as er:
-            return Response({'response': er.args[0]})
+            return Response({'response': er.args[0]}, status=404)
         
         return Response({'response': 'Удаление прошло успешно! Все участники, выборы к голосованию и голосование, были удалены из базы данных'})
 
@@ -101,7 +99,7 @@ class ElectionModelView(ModelViewSet):
             peoples_count: int = UserModel.objects.filter(election_id=election_id['id']).count()
                         
         except Exception as er:
-            return Response({'response': f'Что-то пошло не так, либо неправильный id, либо вы его вообще не передали :/. Ошибка {er}'})
+            return Response({'response': f'Что-то пошло не так, либо неправильный id, либо вы его вообще не передали :/. Ошибка {er}'}, status=404)
                 
         if peoples_count == 0:
             return Response({'response': 'У голосования еще нет участников'})
@@ -129,11 +127,11 @@ class ElectionModelView(ModelViewSet):
         election = ElectionModel.objects.filter(name=election_name)
         
         if election.exists():
-            return Response({'response': f'"{election_name}", уже существует в базе данных'})
+            return Response({'response': f'"{election_name}", уже существует в базе данных'}, status=409)
 
         try:
             ElectionModel.objects.create(name=election_name).save()
         except Exception as er:
-            return Response({'response': f'Error {er.args[0]}'})
+            return Response({'response': f'Error {er.args[0]}'}, status=400)
         
-        return Response({'response': 'Голосование добавлено'})
+        return Response({'response': 'Голосование добавлено'}, status=201)
