@@ -11,5 +11,9 @@ class ChoiceModel(models.Model):
         null=True
     )
     
+    class Meta:
+        verbose_name = 'Выборы к голосованию'
+        verbose_name_plural = 'Выборы к голосованию'
+        
     def __str__(self) -> str:
         return self.name

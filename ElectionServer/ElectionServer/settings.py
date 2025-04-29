@@ -1,12 +1,13 @@
 import os
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-m698w$dsc&22roao&(2ggn&2r6l0j2&!!cwn_mdhcz#()%y)@n'
 
-DEBUG = False
+DEBUG = False   
 
 ALLOWED_HOSTS = ['voteschool.ru', 'www.voteschool.ru', '127.0.0.1', '188.253.23.17']
 
@@ -41,7 +42,9 @@ ROOT_URLCONF = 'ElectionServer.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,65 +89,19 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
 USE_TZ = True
 
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [ 
+    BASE_DIR / 'staticfiles'
+    ]
+STATIC_ROOT = BASE_DIR / 'static'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    # 'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-    },
-    'formatters': {
-        'django.server': {
-            '()': 'django.utils.log.ServerFormatter',
-            'format': '[{server_time}] {message}',
-            'style': '{',
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            #'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-        },
-        'django.server': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'django.server',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            #'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'django.server': {
-            'handlers': ['django.server'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    }
-}
