@@ -11,6 +11,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['voteschool.ru', 'www.voteschool.ru', '127.0.0.1', '188.253.23.17']
 
+CSRF_TRUSTED_ORIGINS = ["https://voteschool.ru"]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
