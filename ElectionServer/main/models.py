@@ -15,6 +15,13 @@ class UserModel(models.Model):
         verbose_name='Выборы ответов',
         null=True
     )
+    
+    def __str__(self):
+        return self.id_card
+    
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
 
 class Hash(models.Model):

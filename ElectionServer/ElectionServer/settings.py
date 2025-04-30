@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-m698w$dsc&22roao&(2ggn&2r6l0j2&!!cwn_mdhcz#()%y)@n'
 
-DEBUG = False   
+DEBUG = True   
 
 ALLOWED_HOSTS = ['voteschool.ru', 'www.voteschool.ru', '127.0.0.1', '188.253.23.17']
 
