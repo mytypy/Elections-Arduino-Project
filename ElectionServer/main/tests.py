@@ -22,7 +22,6 @@ class MainTests(APITestCase, TestMixin):
     def test_create_election(self):
         url = reverse('user-post-user-election') # Т.к я использую ModelViewSet, то я должен писать в таком формате "basename-action-my-method"(Все через тире, даже нижнее подчеркивание)
         response_null = self.client.post(url, self.data_null_1, format='json', headers=self.headers)
-
         self.assertEqual(response_null.json()['response'], 'Запись добавлена')
         
         user = UserModel.objects.get(id_card=self.id_card).__dict__.values()
