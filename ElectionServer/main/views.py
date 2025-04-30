@@ -38,7 +38,7 @@ class UserModelView(ModelViewSet):
                 
         try:
             election: ElectionModel = ElectionModel.objects.get(pk=election)
-            choice: ChoiceModel = ChoiceModel.objects.get(pk=choice)
+            choice: ChoiceModel = ChoiceModel.objects.get(pk=choice, election=election)
             
             UserModel.objects.create(id_card=id_card, election=election, choice=choice).save()
         except Exception as er:
