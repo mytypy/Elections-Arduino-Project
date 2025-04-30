@@ -38,12 +38,11 @@ class UserModelView(ModelViewSet):
                 
         try:
             election: ElectionModel = ElectionModel.objects.get(pk=election)
-            choice: ChoiceModel = ChoiceModel.objects.get(pk=choice, election=election)
-            
+            choice: ChoiceModel = ChoiceModel.objects.filter(pk=choice, election=election)
             UserModel.objects.create(id_card=id_card, election=election, choice=choice).save()
         except Exception as er:
             main_error = er.args[0].split()
-            stringa = ERRORS[main_error[0]]
+            stringa = ERRORS.get(main_error[0], 'У вас неправильные данные. Проверьте их корректность, либо позовите администратора')
             return Response({'response': stringa}, status=400)
             
         return Response({'response': 'Запись добавлена'})
