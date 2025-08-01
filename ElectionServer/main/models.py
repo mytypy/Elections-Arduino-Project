@@ -22,7 +22,3 @@ class UserModel(models.Model):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-
-
-class Hash(models.Model):
-    password = models.CharField(max_length=255, verbose_name='Хэш', unique=True)

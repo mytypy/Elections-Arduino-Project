@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
-from .views import ElectionModelView
+from .views import ElectionViewSet
 
 
 router = SimpleRouter()
-router.register(r'election', ElectionModelView, basename='election')
+router.register(r'election', ElectionViewSet, basename='election')
 
 
 urlpatterns = [

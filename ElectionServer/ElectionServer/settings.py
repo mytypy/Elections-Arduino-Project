@@ -1,5 +1,5 @@
-import os
 from pathlib import Path
+from models.models import DataBaseSecret
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -60,15 +60,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ElectionServer.wsgi.application'
 
+db = DataBaseSecret()
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'elections',
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'PORT': 3306,
-        'HOST': '127.0.0.1',
-        'USER': 'root'
+        'NAME': db.DATABASE,
+        'PASSWORD': db.PASSWORD,
+        'PORT': db.PORT,
+        'HOST': db.HOST,
+        'USER': db.USER
     }
 }
 
@@ -106,3 +107,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'static'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'middleware.ErrorHendler.custom_exception_handler',
+}
