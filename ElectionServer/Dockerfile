@@ -1,16 +1,21 @@
 FROM python:3.13-alpine
 
-RUN apk add --no-cache \
-    bash \
-    mariadb-client
-
-RUN pip install --upgrade pip
+# Обновляем pip и ставим необходимые для сборки пакеты
+RUN pip install --upgrade pip \
+ && apk add --no-cache \
+      bash \
+      postgresql-client \
+      postgresql-dev \
+      gcc \
+      musl-dev \
+      python3-dev
 
 WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+# Теперь psycopg2 (или любой другой пакет с C-расширениями) соберётся без ошибок
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 

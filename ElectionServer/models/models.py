@@ -2,13 +2,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DataBaseSecret(BaseSettings):
-    DATABASE: str
+    DB: str
     USER: str
     PASSWORD: str
     HOST: str
     PORT: int
     
-    model_config = SettingsConfigDict(env_prefix="MYSQL_")
+    model_config = SettingsConfigDict(env_prefix="POSTGRES_")
 
 
 class SecretKey(BaseSettings):

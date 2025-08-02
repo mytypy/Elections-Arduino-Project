@@ -64,8 +64,8 @@ db = DataBaseSecret()
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': db.DATABASE,
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': db.DB,
         'PASSWORD': db.PASSWORD,
         'PORT': db.PORT,
         'HOST': db.HOST,

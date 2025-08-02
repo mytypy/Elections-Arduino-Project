@@ -1,14 +1,21 @@
+#!/bin/bash
 set -e
 
-echo "Ожидание запуска MySQL..."
+echo "Ожидание запуска Postgres"
 
-until mysqladmin ping -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" --silent; do
-echo "MySQL недоступна — ожидаем"
-sleep 5
+until pg_isready -h $POSTGRES_HOST -d $POSTGRES_DB -U $POSTGRES_USER; do
+  sleep 5
 done
 
-echo "MySQL запущена. Выполнение миграций..."
+echo "Postgres запущена. Выполнение миграций..."
 python manage.py migrate
 
-echo "Запуск API..."
-exec uvicorn main:app --host 0.0.0.0 --port 8000
+WORKERS=$(( $(nproc) * 2 + 1 ))
+echo "Запуск Gunicorn с $WORKERS воркерами..."
+exec gunicorn ElectionServer.wsgi:application \
+  --bind 0.0.0.0:8000 \
+  --workers "$WORKERS" \
+  --timeout 60 \
+  --access-logfile - \
+  --error-logfile - \
+  --log-level info

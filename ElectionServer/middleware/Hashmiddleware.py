@@ -8,6 +8,9 @@ class HashMiddleware:
         self.get_response = get_response
     
     def __call__(self, request: HttpRequest):
+        if request.path.startswith('/admin/') or request.path.startswith('/staticfiles/') or request.path.startswith('/static/') or request.path.startswith('/media/') or request.path == '/favicon.ico':
+            return self.get_response(request)
+
         secret = SecretKey()
         data: dict = request.headers
         
