@@ -35,8 +35,8 @@ jobs:
           docker compose ps
 
       -  name: Run tests
-         run: docker compose exec -T api env TEST=1 ./entrypoint.sh
+         run: docker compose exec -T api env TEST=1 ElectionServer/entrypoint.sh
 
       - name: Tear down
         if: always()
-        run: docker compose down --volumes
+        run: docker compose -f ElectionServer/docker-compose.yaml down --volumes
