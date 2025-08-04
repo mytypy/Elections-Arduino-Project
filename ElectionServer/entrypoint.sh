@@ -14,12 +14,10 @@ python manage.py migrate
 WORKERS=$(( $(nproc) * 2 + 1 ))
 echo "Запуск Gunicorn с $WORKERS воркерами..."
 
-# exec gunicorn ElectionServer.wsgi:application \
-#   --bind 0.0.0.0:8000 \
-#   --workers "$WORKERS" \
-#   --timeout 60 \
-#   --access-logfile - \
-#   --error-logfile - \
-#   --log-level info
-
-exec python manage.py test
+exec gunicorn ElectionServer.wsgi:application \
+  --bind 0.0.0.0:8000 \
+  --workers "$WORKERS" \
+  --timeout 60 \
+  --access-logfile - \
+  --error-logfile - \
+  --log-level info
