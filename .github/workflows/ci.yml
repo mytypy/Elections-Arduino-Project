@@ -35,10 +35,8 @@ jobs:
           docker ps
 
       -  name: Run tests
-         run: ls
-        
-      -  name: Check
-         run: ls ElectionServer/
+         run: docker compose -f ElectionServer/docker-compose.yaml exec -T api env TEST=1 bash /app/entrypoint.sh
+
 
 
       - name: Tear down
