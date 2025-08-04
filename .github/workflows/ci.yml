@@ -7,35 +7,25 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Включение БД??
-        run: | 
-           sudo systemctl start mysql.service
-           sleep 5
-           mysql -u root -proot -e "CREATE DATABASE elections;"
-
-      - name: Копирование кода из репозитория
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Установка python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12" # Параметр установки
+      - name: Set up Docker Compose
+        run: docker compose up -d --build
 
-      - name: Установка зависимостей
-        run: pip install -r requirements.txt
+      - name: Wait for services to become healthy
+        run: |
+          echo "Waiting for services..."
+          sleep 15
+          docker compose ps
 
-      - name: Запускаем миграции
-        env:
-          DB_PASSWORD: root
-        run: python ElectionServer/manage.py migrate
+      -  name: Run tests
+         run: docker compose exec -T api env TEST=1 ./entrypoint.sh
 
-      - name: Запускаем тесты
-        env:
-          SHA_ELECTION: ${{ secrets.SHA_ELECTION }}
-          HASH_ELECTION: ${{ secrets.HASH_ELECTION }}
-          DB_PASSWORD: root
-        run: python ElectionServer/manage.py test ElectionServer # Всегда явно указывем самое главное приложение
+      - name: Tear down
+        if: always()
+        run: docker compose down --volumes
