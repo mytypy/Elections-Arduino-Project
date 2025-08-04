@@ -31,13 +31,11 @@ jobs:
       - name: Wait for services to become healthy
         run: |
           echo "Waiting for services..."
-          sleep 15
+          sleep 5
           docker ps
 
       -  name: Run tests
          run: docker compose -f ElectionServer/docker-compose.yaml exec -T api env TEST=1 bash /app/entrypoint.sh || (echo "❌ Тесты провалены!" && exit 1)
-
-
 
       - name: Tear down
         if: always()
