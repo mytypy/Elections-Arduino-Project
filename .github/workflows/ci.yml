@@ -35,7 +35,7 @@ jobs:
           docker ps
 
       -  name: Run tests
-         run: docker compose -f ElectionServer/docker-compose.yaml exec -T api env TEST=1 bash /app/entrypoint.sh
+         run: docker compose -f ElectionServer/docker-compose.yaml exec -T api env TEST=1 bash /app/entrypoint.sh || (echo "❌ Тесты провалены!" && exit 1)
 
 
 
