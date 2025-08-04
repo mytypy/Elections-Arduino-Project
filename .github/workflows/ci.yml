@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "Waiting for services..."
           sleep 15
-          docker compose ps
+          docker compose ElectionServer/docker-compose.yaml ps
 
       -  name: Run tests
          run: docker compose exec -T api env TEST=1 ElectionServer/entrypoint.sh
