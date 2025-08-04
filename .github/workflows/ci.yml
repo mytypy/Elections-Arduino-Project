@@ -14,14 +14,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create .env
+        run: |
+            cat > ElectionServer/.env <<EOF
+            POSTGRES_USER=root
+            POSTGRES_PASSWORD=ZXCxcnqws8121
+            POSTGRES_HOST=database
+            POSTGRES_PORT=5432
+            POSTGRES_DB=elections
+            HMAC_SECRET=zxcvbnmasdf123
+            EOF
+
       - name: Set up Docker Compose
-        env:
-          POSTGRES_USER: root
-          POSTGRES_PASSWORD: ZXCxcnqws8121
-          POSTGRES_HOST: database
-          POSTGRES_PORT: 5432
-          POSTGRES_DB: elections
-          HMAC_SECRET: zxcvbnmasdf123
         run: docker compose -f ElectionServer/docker-compose.yaml up -d --build
 
       - name: Wait for services to become healthy
