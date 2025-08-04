@@ -15,17 +15,17 @@ class ElectionTests(APITestCase, TestMixin):
         response = self.client.get(url, headers=self.headers)
         
         self.assertEqual(response.status_code, 200)
-        pars = response.json()['response']
+        pars = response.json()
         sps = pars[0]
 
         idd = sps['id']
-        election = sps['election']
+        election = sps['name']
         
-        self.assertEqual((idd, election), (1, 'Тут наверное что-то есть'))
+        self.assertEqual((idd, election), (self.election_null.id, 'Тут наверное что-то есть'))
     
     def test_delete(self):
         url = reverse('election-delete-election')
-        data = {'id': 1}
+        data = {'id': self.election_null.id}
         
         response = self.client.post(url, data=data, headers=self.headers)
         self.assertEqual(response.status_code, 200)

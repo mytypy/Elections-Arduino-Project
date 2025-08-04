@@ -17,7 +17,7 @@ class HashMiddleware:
         client_key = data.get('Hash', ' ')
 
         if not compare_digest(client_key, secret.SECRET):
-            return JsonResponse({'detail': 'Подпись не совпадает!'}, json_dumps_params={'ensure_ascii': False})
+            return JsonResponse({'detail': 'Подпись не совпадает!'}, json_dumps_params={'ensure_ascii': False}, status=403)
 
         return self.get_response(request)
 

@@ -10,7 +10,7 @@ class ChoiceTest(APITestCase, TestMixin):
         self.init()
 
     def test_add_chococo(self):
-        test_yes = {'name': 'МяуМУр', 'election': 1}
+        test_yes = {'name': 'МяуМУр', 'election': self.election_null.id}
         test_no = {'name': 'Нет, не идёт', 'election': 993}
         url = reverse('choice-add-choice')
         

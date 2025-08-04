@@ -17,6 +17,4 @@ class ChoicesSerializer(serializers.ModelSerializer):
         return value
     
     def create(self, validated_data):
-        print(validated_data)
         return ChoiceModel.objects.create(**validated_data)
-    
